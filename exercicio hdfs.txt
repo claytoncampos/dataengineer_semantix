@@ -1,0 +1,76 @@
+Comandos HDFS
+
+1. Iniciar o cluster de Big Data
+
+cd docker-bigdata
+docker-compose up -d
+
+
+2. Baixar os dados dos exercícios do treinamento
+cd input
+sudo git clone https://github.com/rodrigo-reboucas/exercises-data.git
+
+
+3. Acessar o container do namenode
+docker exec -it namenode bash
+
+
+4. Criar a estrutura de pastas apresentada a baixo pelo comando: $ hdfs dfs -ls -R /
+hdfs dfs -mkdir -p /user/clayton/data/recover/delete
+user/aluno/
+
+	<nome>
+
+		data
+
+			recover
+
+				delete
+
+5. Enviar a pasta “/input/exercises-data/escola” e o arquivo “/input/exercises-data/entrada1.txt”
+
+hdfs dfs -put /input/exercises-data/escola /user/aluno/clayton/data/
+hdfs dfs -put /input/exercises-data/entrada1.txt /user/aluno/clayton/data/
+
+6. Mover o arquivo “entrada1.txt” para recover
+dfs dfs -mv /user/aluno/clayton/data/entrada1.txt /user/aluno/clayton/recover
+
+
+7. Baixar o arquivo do hdfs “escola/alunos.json” para o sistema local /
+hdfs dfs -get /input/exercises-data/escola/alunos.json /user/aluno/clayton/data
+
+
+8. Deletar a pasta recover
+hdfs dfs -rm -R /user/aluno/clayton/recover
+
+9. Deletar permanentemente o delete
+hdfs dfs -rm -skipTrash -R /user/aluno/clayton/recover
+
+10. Procurar o arquivo “alunos.csv” dentro do /user
+hdfs dfs -find /user -name alunos.csv
+
+11. Mostrar o último 1KB do arquivo “alunos.csv”
+hdfs dfs -tail  /user/aluno/clayton/data/escola/alunos.csv
+
+12. Mostrar as 2 primeiras linhas do arquivo “alunos.csv”
+hdfs dfs -cat  /user/aluno/clayton/data/escola/alunos.csv | head -n 2
+
+13. Verificação de soma das informações do arquivo “alunos.csv”
+hdfs dfs -checksum /user/aluno/clayton/data/escola/alunos.csv
+
+14. Criar um arquivo em branco com o nome de “test” no data
+hdfs dfs -touchz /user/aluno/clayton/data/test
+
+15. Alterar o fator de replicação do arquivo “test” para 2
+hdfs dfs -setrep 2 /user/aluno/clayton/data/test
+hdfs dfs -ls /user/aluno/clayton/data/test
+
+16. Ver as informações do arquivo “alunos.csv”
+hdfs dfs -help stat
+hdfs dfs -stat %r %o /user/aluno/clayton/data/escola/alunos.csv
+
+17. Exibir o espaço livre do data e o uso do disco
+hdfs dfs -df /user/aluno/clayton/data/
+hdfs dfs -df -h /user/aluno/clayton/data/
+hdfs dfs -du -h /user/aluno/clayton/data/
+hdfs dfs -du -h /
