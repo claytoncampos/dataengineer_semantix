@@ -1,0 +1,26 @@
+Hive - Inserir Dados na Tabela Raw
+
+1.Visualizar a descrição da tabela pop do banco de dados <nome>
+Conectar no Container Hiver-server =  docker exec -it hive-server bash 
+Conectar no Beeilne = beeline -u jdbc:hive2://localhost:10000
+Conectar no banco clayton = user clayton;
+Descrição da tabela = desc pop;
+Descrição da tabela (formatacao) = desc formatted pop;
+
+2.Selecionar os 10 primeiros registros da tabela pop
+Selecionar as 10 primeiras linhas = select * from pop limit 10; 
+
+3.Carregar o arquivo do HDFS “/user/aluno/<nome>/data/população/populacaoLA.csv” para a tabela Hive pop
+Primeiro colocar o arquivo no HDFS com o hdfs dfs -put
+carregar o arquivo para a tabela = load data inpath '/user/aluno/clayton/data/populacao/populacaoLAuse.csv' overwrite into table pop;
+ou
+load data inpath '/user/aluno/clayton/data/populacao/' overwrite into table pop;
+
+
+4.Selecionar os 10 primeiros registros da tabela pop
+select * from pop limit 10; 
+
+5.Contar a quantidade de registros da tabela pop
+select count(*) from pop; 
+
+6. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
