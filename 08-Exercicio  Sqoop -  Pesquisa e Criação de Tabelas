@@ -1,0 +1,33 @@
+Sqoop -  Pesquisa e Criação de Tabelas
+
+Todos os comandos precisam ser executados pelo Sqoop.
+
+1. Mostrar todos os databases
+sqoop list-databases --connect jdbc:mysql://database --username root --password secret
+
+2. Mostrar todas as tabelas do bd employees
+sqoop list-tables --connect jdbc:mysql://datsqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "SELECT * FROM benefits limit 15"
+abase/employees --username root --password secret
+
+3. Inserir os valores ('d010', 'BI') na tabela departments do bd employees
+check tabela = sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "SELECT * FROM departments limit 15"
+
+inserindo dados = sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "INSERT INTO departments values('d010','BI')"
+
+
+4. Pesquisar todos os registros da tabela departments
+
+sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "SELECT * FROM departments limit 15"
+
+5. Criar a tabela benefits(cod int(2)  AUTO_INCREMENT PRIMARY KEY, name varchar(30)) no bd employees
+sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "CREATE TABLE benefits(cod int(2)  AUTO_INCREMENT PRIMARY KEY, name varchar(30))"
+
+6. Inserir os valores (null,'food vale') na tabela benefits
+sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "INSERT INTO benefits values(null,'food vale')"
+
+7. Pesquisar todos os registros da tabela benefits
+
+sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "SELECT * FROM benefits limit 15"
+
+
+8. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
