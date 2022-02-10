@@ -1,0 +1,59 @@
+Sqoop - Importação BD Employees – Formato e Compressão
+
+Este exercício não é obrigatório, é apenas um bônus, pois sua resolução exige muito tempo, por isso não irei fazer a correção
+
+Importar a tabela employees com 1 mapeador no warehouse /user/hive/warehouse/db_format, afim de completar a tabela abaixo.
+
+    Formato
+
+o --as-textfile (padrão)
+
+o --as-parquetfile
+
+o ---as-avrodatafile
+
+o --as-sequencefile
+
+    Compactação
+
+o sem compactação (padrão)
+
+o --compress --compression-codec=snappy
+
+o --compress ou --compression --compression-codec=gzip 
+
+o --compress --compression-codec=bzip2
+
+o --compress --compression-codec=deflate
+
+o --compress --compression-codec=lz4
+
+hdfs dfs  -count -h /user/hive/warehouse/db_format_ 
+hdfs dfs  -count -h /user/hive/warehouse/db_format_text_lz4
+
+parquet snappy = 3.0 M
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_format_parquet_snappy --compress --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+parquet gzip = 3.0 M
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_format_parquet_gzip --compress --compression-codec=gzip
+
+parquet bzip2 (cluster nao suportou)
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_format_parquet_defalte --compress --compression-codec=bzip2
+
+parque deflat = 2.2 M
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_format_parquet_deflate --compress --compression-codec=deflate
+
+parque lz4 = 3.0 M
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_format_parquet_defalte --compress --compression-codec=lz4
+
+text snappy (sem suporte no cluster)
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-textfile --warehouse-dir /user/hive/warehouse/db_format_text_snappy --compress --compression-codec=snappy
+
+text deflate = 4.9 M
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-textfile --warehouse-dir /user/hive/warehouse/db_format_text_deflate --compress --compression-codec=deflate
+
+text lz4 =8.2 M
+sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret -m 1  --as-textfile --warehouse-dir /user/hive/warehouse/db_format_text_lz4 --compress --compression-codec=lz4
+
+
+
