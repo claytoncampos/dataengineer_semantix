@@ -1,0 +1,46 @@
+Sqoop - Importação BD Employees- Otimização
+
+Realizar com uso do MySQL
+
+1. Criar a tabela cp_titles_date, contendo a cópia da tabela titles com os campos title e to_date
+use deployees;
+create table cp_titles_date as select  title, to_date from titles;
+
+
+2. Pesquisar os 15 primeiros registros da tabela cp_titles_date
+select * from cp_titles_date limit 15;
+
+3. Alterar os registros do campo to_date para null da tabela cp_titles_date, quando o título for igual a Staff
+
+update cp_titles_date set to_date=NULL where title='staff';
+
+Realizar com uso do Sqoop - Importações no warehouse /user/hive/warehouse/db_test_<numero_questao> e visualizar no HDFS
+
+4. Importar a tabela titles com 8 mapeadores no formato parquet
+
+sqoop import --table titles --connect jdbc:mysql://database/employees --username root --password secret -m 8  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_test_4
+
+
+visualizando= hdfs dfs -ls -h /user/hive/warehouse/db_test_4
+	     hdfs dfs -ls -h /user/hive/warehouse/db_test_4/titles
+
+5. Importar a tabela titles com 8 mapeadores no formato parquet e compressão snappy
+
+sqoop import --table titles --connect jdbc:mysql://database/employees --username root --password secret -m 8  --as-parquetfile --warehouse-dir /user/hive/warehouse/db_test_5 --compress --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+
+6. Importar a tabela cp_titles_date com 4 mapeadores (erro)
+
+ a)   Importar a tabela cp_titles_date com 4 mapeadores divididos pelo campo título no warehouse /user/hive/warehouse/db_test2_title
+ 
+ sqoop import -Dorg.apache.sqoop.splitter.allow_text_splitter=true --table cp_titles_date --connect jdbc:mysql://database/employees --username root --password secret -m 4 --warehouse-dir /user/hive/warehouse/db_test_title --split-by title
+
+
+ b)   Importar a tabela cp_titles_date com 4 mapeadores divididos pelo campo data no warehouse /user/hive/warehouse/db_test2_date
+   
+sqoop import -Dorg.apache.sqoop.splitter.allow_text_splitter=true --table cp_titles_date --connect jdbc:mysql://database/employees --username root --password secret -m 4 --warehouse-dir /user/hive/warehouse/db_test_date --split-by to_date
+ 
+   c) Qual a diferença dos registros nulos entre as duas importações?
+Split by title não ignora os null split by to_date ignora os nullos
+
+7. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
