@@ -11,7 +11,7 @@ show dbs;
 show collections;
 6. Inserir os seguintes documentos na collection produto:
 • _id: 1, "nome": “cpu i5", "qtd": "15“
-db.produto.insertOne({id: 1, "nome": "cpu i5", "qtd": "15"})
+db.produto.insertOne({_id: 1, "nome": "cpu i5", "qtd": "15"})
 • _id: 2, nome: "memória ram", qtd: 10, descricao: {armazenamento: "8GB", tipo:"DDR4"}
 db.produto.insertOne({_id: 2, nome: "memória ram", qtd: 10, descricao: {armazenamento: "8GB", tipo:"DDR4"}})
 • _id: 3, nome: "mouse", qtd: 50, descricao: {conexao: "USB", so: ["Windows", "Mac", "Linux"]}
