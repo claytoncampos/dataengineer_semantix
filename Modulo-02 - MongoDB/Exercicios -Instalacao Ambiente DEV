@@ -1,11 +1,19 @@
 
-    Instalação do docker e docker-compose
+    1-Instalação do docker e docker-compose
         Acesso: https://docs.docker.com/get-docker/ (Links para um site externo.)
-    Baixar as imagens do mongo e mongo-express
-    Iniciar o MongoDB através do docker-compose
-    Listas as imagens em execução
-    Listar os bancos de dados do MongoDB
-    Visualizar através do Mongo Express os bancos de dados
+    2-Baixar as imagens do mongo e mongo-express
+    docker pull mongou e mongo-express ou entrar na pasta do arquivo docker compose e rodar o 
+    docker-compose up -d
+    3-Iniciar o MongoDB através do docker-compose
+    docker-compose up -d ou docker-compose start
+    4-Listas as imagens em execução
+    docker ps
+    5-Listar os bancos de dados do MongoDB
+    entrar no mongo
+    docker exec -it mongo bash
+    mongo
+    show databases;
+    6-Visualizar através do Mongo Express os bancos de dados
         Acesso: http://localhost:8081/ (Links para um site externo.)
 
  
