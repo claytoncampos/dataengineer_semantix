@@ -1,0 +1,73 @@
+Schema Registry
+
+1. Visualizar os dados do tópico users;
+cd kafka
+
+docker-compose up -d
+
+docker exec -it schema-registry bash
+
+pint "users";
+
+list topics;
+
+2. Criar o tópico users-avro
+
+kafka-topics --bootstrap-server localhost:9092 --topic users-avro --create --partitions 3 --replication-factor 1
+
+kafa-topics --bootstrap-server localhost:9092 --topic users-avro --describe
+
+a) Usar o kafka-avro-console-producer para enviar 1 mensagem
+
+kafka-avro-console-producer --broker-list broker:29092 --topic users-avro --property schema.registry.url=http://localhost:8081 
+--property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"id","type":"int"},
+{"name":"nome","type":"string"}]}'
+
+
+b) Usar o kafka-avro-console-consumer para consumir a mensagem
+
+kafka-avro-console-consumer --topic users-avro --bootstrap-server broker:29092 
+--property schema.registry.url=http://localhost:8081 --from-beginning
+
+c) Visualizar o esquema no Control Center
+
+3. Visualizar os dados do users-avro no KSQL
+docker exec -it ksql-server ksql http://ksqldb-server:8088
+
+list streams;
+
+describe users-avro;
+
+4. Criar um stream users-avro1 para o tópico users-avro
+create stream users-avro1 with (kafka_topic='users-avro', value_format='avro');
+
+5. Visualizar os dados do stream users-avro1
+select * from users-avro1 emit changes;
+Usar o kafka-avro-console-producer para adicionar um novo campo chamado “unit” com valor padrão “1”
+
+6. SET 'auto.offset.reset'='earliest';
+
+
+kafka-avro-console-producer --broker-list localhost:29092 --topic users-avro --property schema.registry.url:http://localhost:8081 
+--property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"id","type":"int"},
+{"name":"nome","type":"string"},{"name":"unit","type":"int","default":"1"}]}'
+
+7. Usar o kafka-avro-console-consumer para consumir as mensagens
+kafka-avro-console-consumer --topic users-avro --bootstrap-server broker:29092 
+--property schema.registry.url=http://localhost:8081 --from-beginning
+
+
+8. Comparar os esquemas do users-avro no Control Center
+
+9. Visualizar os dados no stream do tópico users-avro
+kafa-topics --bootstrap-sever localhost:9092 --topic users-avro --list
+
+kafa-topics --bootstrap-sever localhost:9092 --list
+
+list streams;
+
+SET 'auto.offset.reset'='earliest';
+
+select * from users-avro emit changes;
+
+10.  Clicar no botão de Enviar Tarefa, e enviar o texto: ok
