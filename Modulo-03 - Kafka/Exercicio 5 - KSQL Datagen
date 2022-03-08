@@ -1,0 +1,78 @@
+KSQL Datagen
+
+1. Criar o tópico users com os dados do ksql-datagen
+
+    quickstart=users
+    topic=users
+
+
+quickstart=users
+topic=users
+
+docker exec -it ksql-datagen bash
+
+ksql-datagen
+
+ksql-datagen bootstrap-server=broker:29092 schemaRegistryUrl=schema-registry:8081 quickstart=users topic=users
+
+
+2. Visualizar os dados do tópico no Ksql
+
+print "users"
+
+list topics;
+
+show streams;
+
+show tables;
+
+
+3. Criar o stream users_raw com os dados do tópico users com as seguintes propriedades
+
+    kafka_topic='users’
+    value_format='JSON’
+    key = 'userid’
+    timestamp='registertime’
+
+kafka_topic='users’
+value_format='JSON’
+key = 'userid’
+timestamp='registertime’
+
+CREATE STREAM users_raw WITH (KAFKA_TOPIC='users', VALUE_FORMAT='JSON', KEY='userid', TIMESTAMP='registertime');
+
+ou
+
+CREATE STREAM users_raw(userid VARCHAR, registertime BIGINT) WITH (KAFKA_TOPIC='users', VALUE_FORMAT='JSON', KEY='userid', TIMESTAMP='registertime');
+
+4. Visualizar a estrutura da Stream  users_raw
+show streams;
+
+show tables;
+
+5. Visualizar os dados da Stream  users_raw
+elect * from users_raw;
+
+6. Repetir todo o proceso para o tópico pageviews
+
+    ksql-datagen quickstart=pageviews topic= pageviews
+
+ksql-datagen quickstart=pageviews topic= pageviews
+
+ksql-datagen bootstrap-server=broker:29092 schemaRegistryUrl=schema-registry:8081 quickstart=pageviews topic=pageviews
+
+print "pageviews"
+
+CREATE STREAM pageviews_raw WITH (KAFKA_TOPIC='pageviews', VALUE_FORMAT='JSON', KEY='userid', TIMESTAMP='viewtime');
+
+ou
+
+CREATE STREAM pageviews_raw (userid VARCHAR, viewtime BIGINT ) WITH (KAFKA_TOPIC='pageviews', VALUE_FORMAT='JSON', KEY='userid', TIMESTAMP='viewtime');
+
+show streams;
+
+show tables;
+
+select * from pageviews_raw;
+
+7. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
