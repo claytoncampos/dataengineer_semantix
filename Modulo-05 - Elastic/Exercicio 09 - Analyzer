@@ -1,0 +1,89 @@
+Analyzer
+
+1. Criar os Analyzer simple, standard, brazilian e portuguese para a seguinte frase:
+
+        O elasticsearch surgiu em 2010
+        
+POST _analyze
+{
+  "analyzer": "simple",
+  "text": "O elasticsearch surgiu em 2010"
+}
+
+2. Realizar os passos no índice produto
+
+a) Criar um analyzer brazilian para o atributo descricao
+PUT produto1
+{
+  "mappings": {
+    "properties": {
+      "descricao":{
+        "type": "text",
+        "analyzer": "brazilian"
+      }
+    }
+  }
+}
+POST _reindex
+{
+  "source": {
+    "index": "produto"
+  },
+  "dest": {
+    "index": "produto1"
+  }
+}
+b) Para o atributo descricao aplicar o analzyer brazilian para o tipo de campo text e criar o atributo descricao.original com o dado do tipo keyword
+
+PUT produto
+{
+  "mappings": {
+    "properties": {
+      "descricao":{
+        "type": "text",
+        "analyzer": "brazilian",
+        "fields": {
+          "original":{
+            "type":"keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+POST _reindex
+{
+  "source": {
+    "index": "produto1"
+  },
+  "dest": {
+    "index": "produto"
+  }
+}
+c) Buscar a palavra “compativel” no campo descricao.original (hits = 0)
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao.original": "compatível"
+    }
+  }
+}
+
+GET produto/_search
+{
+  "query": {
+    "match": {
+      "descricao": "compativel"
+    }
+  }
+}
+
+d) Buscar a palavra “compativel” no campo descricao
+
+
+3. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
