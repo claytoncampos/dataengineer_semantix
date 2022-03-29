@@ -1,0 +1,48 @@
+Beats
+
+1. Enviar o arquivo <local>/paris-925.logs com uso do Filebeat
+arquivo 
+./filebeat -e
+
+2. Verificar a quantidade de documentos do índice criado pelo Filebeat e visualizar seus 10 primeiros documentos
+
+GET filebeat-7.9.2-2022.03.29-000001/_search
+GET filebeat-7.9.2-2022.03.29-000001/_count
+
+3. Monitorar as métricas do docker
+./metricbeat modules enable docker
+
+	verificar se as conf estão ok
+	 ./metricbeat test config
+	 
+	 verificar s eoutup esta ok
+	./metricbeat test output
+
+
+    Referência:
+
+https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-module-docker.html (Links para um site externo.)
+
+    Encontrar o socket do Docker
+
+$ sudo find / -name docker.sock
+/usr/lib/systemd/system/docker.socket
+
+alterar  o arquivo docker.yaml dentr da pasta metricbeat-7.9.2-linux-x86_64/modules.d descomentar e colocar o diretorio com "unix:///usr/lib/systemd/system/docker.socket
+sudo chown root modules.d/docker.yml  e colocar enabled: true 
+sudo chown root metricbeat.yml
+ sudo chown root modules.d/system.yml
+
+sudo ./metricbeat -e
+
+4. Verificar a quantidade de documentos do índice criado pelo Metricbeat e visualizar seus 10 primeiros documentos
+
+
+5. Monitorar o site https://www.elastic.co/pt/ (Links para um site externo.) com uso do Heartbeat
+sudo chown root modules.d/*.yml
+entrar dentro do arquivo heartbeat.yml e mudar o site de monitoramento
+
+6. Verificar a quantidade de documentos do índice criado pelo Heartbeat e visualizar seus 10 primeiros documentos
+
+GET heartbeat-7.9.2-2022.03.29-000001/_search
+GET heartbeat-7.9.2-2022.03.29-000001/_count
