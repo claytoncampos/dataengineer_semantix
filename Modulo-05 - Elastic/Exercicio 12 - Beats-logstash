@@ -2,7 +2,13 @@ Beats
 
 1. Enviar o arquivo <local>/paris-925.logs  para o Logstash, com uso do Filebeat.
 
-2. Configurar e executar o logstash com as seguintes configurações
+alterar o filebeat.yml
+comentar a linha output.elasticsearch:
+descomentar output.logstash:
+apaga pastas sudo rm -rf data logs dentro do /filebeat
+iniciar o file beat ./filebeat -e
+
+2. Configurar e executar o logstash com as seguintes configurações /pipeline/losgtash.conf
 
     Entrada:
     beats {
@@ -16,10 +22,16 @@ Beats
 
             hosts => [ “elasticsearch:9200" ]
 
-            index => “seu_nome-%{+YYYY.MM.dd}"
+            index => “clayton-%{+YYYY.MM.dd}"
 
         }
 
 3. Verificar a quantidade de documentos do índice criado pelo Logstash e visualizar seus 10 primeiros documentos
+
+GET _cat/indices
+GET _cat/indices?v
+GET clayton-2022.03.30/_count
+GET clayton-2022.03.30/_search
+
 
 4. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
