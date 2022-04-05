@@ -1,0 +1,38 @@
+1. Criar o arquivo do notebook com o nome teste_spark.ipynb
+
+2. Obter as informações da sessão de spark (spark)
+
+3. Obter as informações do contexto do spark (sc)
+
+4. Setar o log como INFO.
+spark.sparkContext.setLogLevel('INFO')
+
+5. Visualizar todos os banco de dados com o catalog
+spark.catalog.listDatabases()
+
+6. Ler os dados "hdfs://namenode:8020/user/clayton/data/juros_selic/juros_selic.json“ com uso de Dataframe
+
+df_juros = spark.read.json("hdfs://namenode:8020/user/clayton/data/juros_selic/juros_selic.json")
+df_juros.show(10)
+
+ou hdfs:///user/clayton/data/juros_selic/juros_selic.json"
+        "/user/clayton/data/juros_selic/juros_selic.json"	
+
+7. Salvar o Dataframe como juros no formato de tabela Hive
+df_juros.write.saveAsTable("juros")
+
+
+8. Visualizar todas as tabelas com o catalog
+spark.catalog.listTables()
+
+9. Visualizar no hdfs o formato e compressão que está a tabela juros do Hive
+entrar no namenode ou direto pelo jupyter
+!hdfs dfs -ls /user/hive/warehouse/juros
+
+10. Ler e visualizar os dados da tabela juros, com uso de Dataframe no formato de Tabela Hive
+spark.read.table("juros").show(10)
+
+11. Ler e visualizar os dados da tabela juros , com uso de Dataframe no formato Parquet
+spark.read.parquet("/user/hive/warehouse/juros/").show(10)
+
+12. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
