@@ -10,8 +10,12 @@
 
 3. Verificar o envio dos dados para o namenode
 
-4. Criar no hdfs a seguinte estrutura: /user/rodrigo/data
-
-5. Enviar todos os dados do diretório input para o hdfs em /user/rodrigo/data
+4. Criar no hdfs a seguinte estrutura: /user/clayton/data
+ entrar no container namenode
+ docker exec -it container bash
+ hdfs dfs -mkdir -p /user/clayton/data
+ 
+5. Enviar todos os dados do diretório input para o hdfs em /user/clayton/data
+hdfs dfs -put /input/* /user/clayton/data/
 
 6. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
