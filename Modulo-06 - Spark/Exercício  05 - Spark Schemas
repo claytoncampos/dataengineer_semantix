@@ -1,0 +1,47 @@
+1. Criar o DataFrame names_us_sem_schema para ler os arquivos no HDFS “/user/<nome>/data/names”
+names_us_sem_schema = spark.read.csv("/user/clayton/data/names/")
+print(names_us_sem_schema.printSchema())
+
+
+2. Visualizar o Schema e os 5 primeiros registos do names_us_sem_schema
+names_us_sem_schema.show(5)
+
+3. Criar o DataFrame names_us para ler os arquivos no HDFS “/user/<nome>/data/names” com o seguinte schema:
+
+    nome: String
+    sexo: String
+    quantidade: Inteiro
+
+
+from pyspark.sql.types import *
+estrutura_lista = [
+    StructField("nome", StringType()),
+    StructField("sexo", StringType()),
+    StructField("quantidade", IntegerType())
+]
+
+schema_name = StructType(estrutura_lista)
+
+ou
+
+#ou 
+schema_name = StructType([
+    StructField("nome", StringType()),
+    StructField("sexo", StringType()),
+    StructField("quantidade", IntegerType())
+])
+
+
+names_us = spark.read.csv("/user/clayton/data/names", schema=schema_name)
+
+
+4. Visualizar o Schema e os 5 primeiros registos do names_us
+print(names_us.printSchema())
+names_us.show(5)
+
+
+5. Salvar o DataFrame names_us no formato orc no hdfs “/user/<nome>/names_us_orc”
+names_us.write.orc("/user/clayton/names_us_orc")
+!hdfs dfs -ls /user/clayton/names_us_orc
+
+6. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
