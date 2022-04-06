@@ -1,0 +1,17 @@
+1. Ler com RDD os arquivos localmente do diretório “/opt/spark/logs/” ("file:///opt/spark/logs/") com 10 partições
+
+rdd = sc.textFile("file:///opt/spark/logs/")
+2. Contar a quantidade de cada palavras do RDD em 5 partições
+alteracao apenas no reduce
+
+palavras_reduce_particoes = palavras_count_particoes.reduceByKey(lambda x,y:x+y,5)
+palavras_reduce_particoes.getNumPartitions()
+
+3. Salvar o RDD no diretório do HDFS /user/<seu-nome>/logs_count_word_5
+palavras_reduce_particoes.saveAsTextFile("/user/clayton/logs_count_word_5")
+!hdfs dfs -ls /user/clayton/logs_count_word_5
+
+4. Refazer a questão 2, com todas as funções na mesma linha de um RDD
+palavras_particoes_linha = log_particoes.flatMap(lambda linha: linha.split(" ")).map(lambda palavra: palavra.lower()).map(lambda palavra: (palavra, 1)).reduceByKey(lambda x,y:x+y,5)
+
+5. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
