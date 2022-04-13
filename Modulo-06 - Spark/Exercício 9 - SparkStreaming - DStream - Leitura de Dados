@@ -1,0 +1,18 @@
+1. Instalar o NetCat no container do spark
+
+    apt update
+    apt install netcat
+
+2. Criar uma aplicação para ler os dados da porta 9999 e exibir no console
+from pyspark import SparkContext
+from pyspark.streaming import StreamingContext
+
+conf = SparkConf().setMaster("local[*]").setAppName("Dstream Python")
+sc = SparkContext.getOrCreate(conf)
+ssc = StreamingContext(sc, 5)
+
+dstream = ssc.socketTextStream("localhost", 9999)
+dstream.pprint()
+ssc.start()
+ssc.stop()
+3. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
