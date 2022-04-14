@@ -1,0 +1,77 @@
+Kafka
+
+1. Preparação do ambiente no Kafka
+
+a) Criar o tópico “topic-spark” com 1 partição e o fator de replicação = 1
+kafka-topics.sh --bootstrap-server kafka:9092 --create --topic topic-spark --partitions 1 --replication-factor 1
+
+
+b) Inserir as seguintes mensagens no tópico:
+kafka-console-producer.sh --broker-list kafka:9092 --topic topic-spark
+
+o Msg1
+
+o Msg2
+
+o Msg3
+
+c) Criar um consumidor no Kafka para ler o “topic-spark”
+kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic topic-spark
+
+
+Spark
+
+1. Criar um consumidor em Scala usando Spark Streaming para ler o “topic-spark” no cluster Kafka ”kafka:9092”
+
+
+spark-shell --packages org.apache.spark:spark-streaming-kafka-0-10_2.11:2.4.1
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.spark.streaming.kafka010._
+import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
+import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
+import org.apache.spark.streaming.{StreamingContext, Seconds}
+
+val kafkaParams = Map[String, Object](
+	"bootstrap.servers" -> "kafka:9092",
+	"key.deserializer" -> classOf[StringDeserializer],
+	"value.deserializer" -> classOf[StringDeserializer],
+	"group.id" -> "aplicacao1",
+	"auto.offset.reset" -> "earliest",
+	"enable.auto.commit" -> (false: java.lang.Boolean)
+)
+#criando o contexto sparkStreaming
+val ssc = new StreamingContext(sc, Seconds(5))
+
+#lendo o topico
+val topics = Array("topic-spark")
+val streams = KafkaUtils.createDirectStream[String, String](
+	ssc,
+	PreferConsistent,
+	Subscribe[String, String](topics, kafkaParams)
+)
+
+
+2. Visualizar o tópico com as seguintes informações
+
+    Nome do tópico
+    Partição
+    Valor
+
+val info_stream = streams.map(record => (record.topic, 
+	record.partition,
+	record.value)
+)
+
+info_stream.print()
+
+
+
+3. Salvar o tópico no diretório hdfs://namenode:8020/user/<nome>/kafka/dstream
+
+info_stream .saveAsTextFiles("hdfs://namenode:8020 ")
+ssc.start()
+
+
+
+
