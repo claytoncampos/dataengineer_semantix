@@ -2,27 +2,26 @@ Kafka
 
 1. Preparação do ambiente no Kafka
 
-a) Criar o tópico “topic-spark” com 1 partição e o fator de replicação = 1
-kafka-topics.sh --bootstrap-server kafka:9092 --create --topic topic-spark --partitions 1 --replication-factor 1
+a) Criar o tópico “topic-kvspark” com 2 partições e o fator de replicação = 1
+kafka-topics.sh --bootstrap-server kafka:9092 --create --topic topic-kvspark --partitions 2 --replication-factor 1
 
 
-b) Inserir as seguintes mensagens no tópico:
-kafka-console-producer.sh --broker-list kafka:9092 --topic topic-spark
+b) Inserir as seguintes mensagens no tópico (Chave, Valor):
+kafka-console-producer.sh --broker-list kafka:9092 --topic topic-kvspark --property parse.key=true --property key.separator=,
 
-o Msg1
+o 1, Msg1
 
-o Msg2
+o 2, Msg2
 
-o Msg3
-
-c) Criar um consumidor no Kafka para ler o “topic-spark”
-kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic topic-spark
+o 3, Msg3
 
 
+
+c) Criar um consumidor no Kafka para ler o “topic-kvspark”
+kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic topic-kvspark
 Spark
 
-1. Criar um consumidor em Scala usando Spark Streaming para ler o “topic-spark” no cluster Kafka ”kafka:9092”
-
+1. Criar um consumidor em Scala usando Spark Streaming para ler o “topic-kvspark” no cluster Kafka ”kafka:9092”
 
 spark-shell --packages org.apache.spark:spark-streaming-kafka-0-10_2.11:2.4.1
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -36,7 +35,7 @@ val kafkaParams = Map[String, Object](
 	"bootstrap.servers" -> "kafka:9092",
 	"key.deserializer" -> classOf[StringDeserializer],
 	"value.deserializer" -> classOf[StringDeserializer],
-	"group.id" -> "aplicacao1",
+	"group.id" -> "aplicacao2",
 	"auto.offset.reset" -> "earliest",
 	"enable.auto.commit" -> (false: java.lang.Boolean)
 )
@@ -44,7 +43,7 @@ val kafkaParams = Map[String, Object](
 val ssc = new StreamingContext(sc, Seconds(5))
 
 #lendo o topico
-val topics = Array("topic-spark")
+val topics = Array("topic-kvspark")
 val streams = KafkaUtils.createDirectStream[String, String](
 	ssc,
 	PreferConsistent,
@@ -56,22 +55,20 @@ val streams = KafkaUtils.createDirectStream[String, String](
 
     Nome do tópico
     Partição
+    Chave
     Valor
 
 val info_stream = streams.map(record => (record.topic, 
 	record.partition,
+	record.key,
 	record.value)
 )
 
 info_stream.print()
 
+3. Salvar o tópico no diretório hdfs://namenode:8020/user/<nome>/kafka/dstreamkv
+info_stream .saveAsTextFiles("hdfs://namenode:8020/user/clayton/kafka/dstreamkv ")
 
-
-3. Salvar o tópico no diretório hdfs://namenode:8020/user/<nome>/kafka/dstream
-
-info_stream .saveAsTextFiles("hdfs://namenode:8020/clayton/kafka/dstream ")
 ssc.start()
 
-
-
-
+4. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
