@@ -1,0 +1,48 @@
+1. Criar uma aplicação em scala usando o spark para ler os dados da porta 9999 e exibir no console
+
+porta_leitura = spark.readStream.format("socket").option("host", "localhost").option("port", "9999").load()
+porta_saida = porta_leitura.writeStream.format("console").start()
+
+nc -lp 9999 (cria os dados)
+2. Ler os arquivos csv “hdfs://namenode:8020/user/clayton/data/iris/*.data” em modo streaming com o seguinte schema:
+
+    sepal_length float
+    sepal_width float
+    petal_length float
+    petal_width float
+    class string
+
+from pyspark.sql.types import StructType
+iris_schema = StructType()\
+            .add("sepal_length", "float")\
+            .add("sepal_width", "float")\
+            .add("petal_length", "float")\
+            .add("petal_width", "float")\
+            .add("class","string")
+
+#ou criar dessa forma a estrutura
+print(iris_schema)
+iris = spark.readStream.schema(iris_schema).csv("/user/clayton/data/iris/*.data")
+
+3. Visualizar o schema das informações
+iris.printSchema()
+
+4. Salvar os dados no diretório “hdfs://namenode:8020/user/<nome>/stream_iris/path” e o checkpoint em “hdfs://namenode:8020/user/<nome>/stream_iris/check”
+
+iris_saida = iris.writeStream.format("csv")\
+    .option("checkpointLocation", "/user/clayton/stream_iris/check")\
+    .option("path", "/user/clayton/stream_iris/path")\
+    .start()
+
+iris_saida.status
+
+
+
+5. Verificar a saida no hdfs e entender como os dados foram salvos
+!hdfs dfs -ls /user/clayton/stream_iris/path
+
+spark.read.csv("/user/clayton/stream_iris/path/part-00001-cc610d86-ef3d-4120-b105-d8b5170c9196-c000.csv").count()
+
+6. Bônus: Contar as palavras do exercício 1.
+
+7. Clicar no botão de Enviar Tarefa, e enviar o texto: ok
